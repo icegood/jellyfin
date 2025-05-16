@@ -228,6 +228,13 @@ namespace Jellyfin.Server
                 _logger.LogInformation("Startup complete {Time:g}", Stopwatch.GetElapsedTime(_startTimestamp));
 
                 await _jellyfinHost.WaitForShutdownAsync().ConfigureAwait(false);
+                var lifetime = _jellyfinHost.Services.GetRequiredService<IHostApplicationLifetime>();
+
+                lifetime.ApplicationStopping.Register(() =>
+                {
+                    _logger.LogInformation("Application is stopping. Performing cleanup...");
+                });
+
                 _restartOnShutdown = appHost.ShouldRestart;
                 _restoreFromBackup = appHost.RestoreBackupPath;
             }

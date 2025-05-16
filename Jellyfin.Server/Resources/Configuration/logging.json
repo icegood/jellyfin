@@ -26,7 +26,9 @@
                                 "retainedFileCountLimit": 3,
                                 "rollOnFileSizeLimit": true,
                                 "fileSizeLimitBytes": 100000000,
-                                "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}"
+                                "outputTemplate": "[{Timestamp:yyyy.MM.dd/HH:mm:ss.fff}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}",
+                                "shared": true
+
                             }
                         }
                     ]
