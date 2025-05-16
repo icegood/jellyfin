@@ -1,0 +1,22 @@
+services:
+  dev:
+    container_name: jellyfin_backend_runner
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    image: jellyfin_backend:ice_master-amd64
+    command: tail -f /dev/null
+    volumes:
+      - /media/ice/backup/test_media:/test_media
+      - /media/ice/backup/jellyfin_container/config:/config
+      - /media/ice/backup/jellyfin_container/cache:/cache
+      - "..:/workspaces/jellyfin-server"
+    env_file:
+      - env_file
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8g
+    # Needed for Dev Container features to install correctly
+    init: true

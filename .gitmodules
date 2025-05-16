@@ -1,0 +1,4 @@
+[submodule ".devcontainer/taglib-sharp"]
+	path = .devcontainer/taglib-sharp
+	url = https://github.com/icegood/taglib-sharp
+	branch = ice/mymaster

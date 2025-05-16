@@ -1,0 +1,4 @@
+{
+    "editor.insertSpaces": true,
+    "dotnet.defaultSolution": "Jellyfin.sln"
+}

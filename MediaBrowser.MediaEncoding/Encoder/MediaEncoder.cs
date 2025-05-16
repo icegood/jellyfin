@@ -130,6 +130,9 @@ namespace MediaBrowser.MediaEncoding.Encoder
             }
 
             _thumbnailResourcePool = new(semaphoreCount);
+            _logger.LogInformation("_thumbnailResourcePool available {Cnt}", semaphoreCount);
+            ThreadPool.GetMaxThreads(out int maxWorker, out int maxIO);
+            _logger.LogInformation("sys threads: {MaxWorker}, {MaxIO}", maxWorker, maxIO);
         }
 
         /// <inheritdoc />
@@ -755,12 +758,13 @@ namespace MediaBrowser.MediaEncoding.Encoder
                 EnableRaisingEvents = true
             };
 
-            _logger.LogDebug("{ProcessFileName} {ProcessArguments}", process.StartInfo.FileName, process.StartInfo.Arguments);
+            _logger.LogInformation("FFMPEG<line 758>: {ProcessFileName} {ProcessArguments}", process.StartInfo.FileName, process.StartInfo.Arguments);
 
             using (var processWrapper = new ProcessWrapper(process, this))
             {
                 using (await _thumbnailResourcePool.LockAsync(cancellationToken).ConfigureAwait(false))
                 {
+                    LogThumbnailResourcePool();
                     StartProcess(processWrapper);
 
                     var timeoutMs = _configurationManager.Configuration.ImageExtractionTimeoutMs;
@@ -779,6 +783,8 @@ namespace MediaBrowser.MediaEncoding.Encoder
                         throw new FfmpegException(string.Format(CultureInfo.InvariantCulture, "ffmpeg image extraction timed out for {0} after {1}ms", inputPath, timeoutMs), ex);
                     }
                 }
+
+                LogThumbnailResourcePool();
 
                 var file = _fileSystem.GetFileInfo(tempExtractPath);
 
@@ -956,6 +962,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
                 "image2",
                 outputPath);
 
+            _logger.LogInformation("ExtractVideoImagesOnIntervalInternal: {Args}", args);
             // Start ffmpeg process
             var process = new Process
             {
@@ -972,7 +979,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
             };
 
             var processDescription = string.Format(CultureInfo.InvariantCulture, "{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments);
-            _logger.LogInformation("Trickplay generation: {ProcessDescription}", processDescription);
+            _logger.LogInformation("FFMPEG<line 976>: {ProcessDescription}", processDescription);
 
             using (var processWrapper = new ProcessWrapper(process, this))
             {
@@ -980,6 +987,7 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
                 using (await _thumbnailResourcePool.LockAsync(cancellationToken).ConfigureAwait(false))
                 {
+                    LogThumbnailResourcePool();
                     StartProcess(processWrapper);
 
                     // Set process priority
@@ -1054,9 +1062,10 @@ namespace MediaBrowser.MediaEncoding.Encoder
 
                     throw new FfmpegException(string.Format(CultureInfo.InvariantCulture, "ffmpeg image extraction failed for {0}", processDescription));
                 }
-
-                return targetDirectory;
             }
+
+            LogThumbnailResourcePool();
+            return targetDirectory;
         }
 
         public string GetTimeParameter(long ticks)
@@ -1069,6 +1078,13 @@ namespace MediaBrowser.MediaEncoding.Encoder
         public string GetTimeParameter(TimeSpan time)
         {
             return time.ToString(@"hh\:mm\:ss\.fff", CultureInfo.InvariantCulture);
+        }
+
+        private void LogThumbnailResourcePool()
+        {
+            var id = Thread.CurrentThread.ManagedThreadId;
+            ThreadPool.GetAvailableThreads(out int worker, out int io);
+            _logger.LogInformation("{ID}: _thumbnailResourcePool occupied: {Cnt}, threads: {Worker}, {IO}", id, _thumbnailResourcePool.GetCurrentCount(), worker, io);
         }
 
         private void StartProcess(ProcessWrapper process)

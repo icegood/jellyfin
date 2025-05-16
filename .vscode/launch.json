@@ -2,12 +2,24 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "ghcs .NET Launch (nowebclient, ffmpeg)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Jellyfin.Server/bin/Debug/net8.0/jellyfin.dll",
+            "args": ["--nowebclient", "--ffmpeg", "/opt/ffmpeg_ice/bin/ffmpeg"],
+            "cwd": "${workspaceFolder}/Jellyfin.Server",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
             "name": ".NET Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Jellyfin.Server/bin/Debug/net8.0/jellyfin.dll",
-            "args": [],
+            "args": ["--ffmpeg", "/opt/ffmpeg_ice/bin/ffmpeg"],
             "cwd": "${workspaceFolder}/Jellyfin.Server",
             "console": "internalConsole",
             "stopAtEntry": false,
@@ -16,30 +28,6 @@
                 "action": "openExternally",
                 "pattern": "Overriding address\\(es\\) \\'(https?:\\S+)\\'",
             }
-        },
-        {
-            "name": ".NET Launch (nowebclient)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Jellyfin.Server/bin/Debug/net8.0/jellyfin.dll",
-            "args": ["--nowebclient"],
-            "cwd": "${workspaceFolder}/Jellyfin.Server",
-            "console": "internalConsole",
-            "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "name": "ghcs .NET Launch (nowebclient, ffmpeg)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Jellyfin.Server/bin/Debug/net8.0/jellyfin.dll",
-            "args": ["--nowebclient", "--ffmpeg", "/usr/lib/jellyfin-ffmpeg/ffmpeg"],
-            "cwd": "${workspaceFolder}/Jellyfin.Server",
-            "console": "internalConsole",
-            "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": ".NET Attach",

@@ -1,0 +1,4 @@
+JELLYFIN_DATA_DIR=/config
+JELLYFIN_CACHE_DIR=/cache
+JELLYFIN_CONFIG_DIR=/config/config
+JELLYFIN_LOG_DIR=/config/log

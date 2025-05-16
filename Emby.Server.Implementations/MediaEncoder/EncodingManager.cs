@@ -118,6 +118,7 @@ namespace Emby.Server.Implementations.MediaEncoder
 
             if (!IsEligibleForChapterImageExtraction(video, libraryOptions))
             {
+                _logger.LogInformation("RefreshChapterImages: Video {V} is not eligible for extraction", video.FileNameWithoutExtension);
                 extractImages = false;
             }
 

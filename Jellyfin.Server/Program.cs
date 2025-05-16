@@ -180,6 +180,13 @@ namespace Jellyfin.Server
 
                 _logger.LogInformation("Startup complete {Time:g}", Stopwatch.GetElapsedTime(_startTimestamp));
 
+                var lifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
+
+                lifetime.ApplicationStopping.Register(() =>
+                {
+                    _logger.LogInformation("Application is stopping. Performing cleanup...");
+                });
+
                 await host.WaitForShutdownAsync().ConfigureAwait(false);
                 _restartOnShutdown = appHost.ShouldRestart;
             }
