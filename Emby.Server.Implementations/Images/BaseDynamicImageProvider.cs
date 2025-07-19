@@ -82,7 +82,7 @@ namespace Emby.Server.Implementations.Images
 
             if (image is not null)
             {
-                if (!image.IsLocalFile)
+                if (!image.IsLocalFile || !options.ReplaceAllImages)
                 {
                     return Task.FromResult(ItemUpdateType.None);
                 }

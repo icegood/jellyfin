@@ -78,10 +78,7 @@ public class ItemRefreshController : BaseJellyfinApiController
             ImageRefreshMode = imageRefreshMode,
             ReplaceAllImages = replaceAllImages,
             ReplaceAllMetadata = replaceAllMetadata,
-            ForceSave = metadataRefreshMode == MetadataRefreshMode.FullRefresh
-                || imageRefreshMode == MetadataRefreshMode.FullRefresh
-                || replaceAllImages
-                || replaceAllMetadata,
+            ForceSave = replaceAllImages || replaceAllMetadata,
             IsAutomated = false,
             RemoveOldMetadata = replaceAllMetadata,
             RegenerateTrickplay = regenerateTrickplay

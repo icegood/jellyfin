@@ -12,8 +12,7 @@ namespace Jellyfin.Server.Implementations.StorageHelpers;
 /// </summary>
 public static class StorageHelper
 {
-    private const long TwoGigabyte = 2_147_483_647L;
-    private const long FiveHundredAndTwelveMegaByte = 536_870_911L;
+    private const long ConfigThreshold = 128_000_000L;
     private static readonly string[] _byteHumanizedSuffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB"];
 
     /// <summary>
@@ -23,11 +22,11 @@ public static class StorageHelper
     /// <param name="logger">Logger.</param>
     public static void TestCommonPathsForStorageCapacity(IApplicationPaths applicationPaths, ILogger logger)
     {
-        TestDataDirectorySize(applicationPaths.DataPath, logger, TwoGigabyte);
-        TestDataDirectorySize(applicationPaths.LogDirectoryPath, logger, FiveHundredAndTwelveMegaByte);
-        TestDataDirectorySize(applicationPaths.CachePath, logger, TwoGigabyte);
-        TestDataDirectorySize(applicationPaths.ProgramDataPath, logger, TwoGigabyte);
-        TestDataDirectorySize(applicationPaths.TempDirectory, logger, TwoGigabyte);
+        TestDataDirectorySize(applicationPaths.DataPath, logger, ConfigThreshold);
+        TestDataDirectorySize(applicationPaths.LogDirectoryPath, logger, ConfigThreshold);
+        TestDataDirectorySize(applicationPaths.CachePath, logger, ConfigThreshold);
+        TestDataDirectorySize(applicationPaths.ProgramDataPath, logger, ConfigThreshold);
+        TestDataDirectorySize(applicationPaths.TempDirectory, logger, ConfigThreshold);
     }
 
     /// <summary>

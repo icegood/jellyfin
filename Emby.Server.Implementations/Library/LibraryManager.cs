@@ -1962,27 +1962,38 @@ namespace Emby.Server.Implementations.Library
             }
         }
 
-        private bool ImageNeedsRefresh(ItemImageInfo image)
+        private (bool IsRefreshed, string Reason) ImageNeedsRefreshInternal(ItemImageInfo image)
         {
             if (image.Path is not null && image.IsLocalFile)
             {
                 if (image.Width == 0 || image.Height == 0 || string.IsNullOrEmpty(image.BlurHash))
                 {
-                    return true;
+                    return (true, "image is empty");
                 }
 
                 try
                 {
-                    return image.DateModified.Subtract(_fileSystem.GetLastWriteTimeUtc(image.Path)).Duration().TotalSeconds > 1;
+                    return (_fileSystem.GetLastWriteTimeUtc(image.Path) < image.DateModified, "outdated by timestamp");
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Cannot get file info for {0}", image.Path);
-                    return false;
+                    return (false, string.Empty);
                 }
             }
 
-            return image.Path is not null && !image.IsLocalFile;
+            return (image.Path is not null && !image.IsLocalFile, "not local file");
+        }
+
+        private bool ImageNeedsRefresh(ItemImageInfo image)
+        {
+            var (needs, reason) = ImageNeedsRefreshInternal(image);
+            if (needs)
+            {
+                _logger.LogDebug("To refresh '{Path}' due to '{Reason}'", image.Path, reason);
+            }
+
+            return needs;
         }
 
         /// <inheritdoc />

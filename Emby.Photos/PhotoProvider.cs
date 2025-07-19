@@ -58,6 +58,11 @@ public class PhotoProvider : ICustomMetadataProvider<Photo>, IForcedProvider, IH
     /// <inheritdoc />
     public Task<ItemUpdateType> FetchAsync(Photo item, MetadataRefreshOptions options, CancellationToken cancellationToken)
     {
+        if (!options.ReplaceAllImages && item.HasImage(ImageType.Primary, 0))
+        {
+            return Task.FromResult(ItemUpdateType.None);
+        }
+
         item.SetImagePath(ImageType.Primary, item.Path);
 
         // Examples: https://github.com/mono/taglib-sharp/blob/a5f6949a53d09ce63ee7495580d6802921a21f14/tests/fixtures/TagLib.Tests.Images/NullOrientationTest.cs
@@ -169,7 +174,6 @@ public class PhotoProvider : ICustomMetadataProvider<Photo>, IForcedProvider, IH
             }
         }
 
-        const ItemUpdateType Result = ItemUpdateType.ImageUpdate | ItemUpdateType.MetadataImport;
-        return Task.FromResult(Result);
+        return Task.FromResult(ItemUpdateType.ImageUpdate | ItemUpdateType.MetadataImport);
     }
 }

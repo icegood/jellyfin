@@ -20,5 +20,5 @@
       ]
     }
   },
-  "postStartCommand": "dotnet restore; sudo dotnet workload update; dotnet dev-certs https --trust",
+  "postStartCommand": "dotnet restore; dotnet tool restore; sudo dotnet workload update; dotnet dev-certs https --trust"
 }

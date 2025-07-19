@@ -1,6 +1,6 @@
 #nullable disable
 
-#pragma warning disable CS1591, SA1401
+#pragma warning disable CS1591, SA1401, CA1819, CA1721, CA1002
 
 using System;
 using System.Collections.Generic;
@@ -1274,7 +1274,6 @@ namespace MediaBrowser.Controller.Entities
         public async Task<ItemUpdateType> RefreshMetadata(MetadataRefreshOptions options, CancellationToken cancellationToken)
         {
             var requiresSave = false;
-
             if (SupportsOwnedItems)
             {
                 try
@@ -1372,7 +1371,7 @@ namespace MediaBrowser.Controller.Entities
             var newExtraIds = Array.ConvertAll(extras, x => x.Id);
             var extrasChanged = !item.ExtraIds.SequenceEqual(newExtraIds);
 
-            if (!extrasChanged && !options.ReplaceAllMetadata && options.MetadataRefreshMode != MetadataRefreshMode.FullRefresh)
+            if (!extrasChanged && !options.ReplaceAllMetadata)
             {
                 return false;
             }
@@ -1723,7 +1722,7 @@ namespace MediaBrowser.Controller.Entities
             return GetType().Name;
         }
 
-        public BaseItemKind GetBaseItemKind()
+        public virtual BaseItemKind GetBaseItemKind()
         {
             return _baseItemKind ??= Enum.Parse<BaseItemKind>(GetClientTypeName());
         }
